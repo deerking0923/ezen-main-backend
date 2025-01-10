@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: ezen-main-backend
+
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+# Swagger 설정 수정
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+    display-request-duration: true
+  api-docs:
+    path: /v3/api-docs
+  packages-to-scan:
+    - com.springboot.board.api.v1.controller
+    - com.springboot.board.web.controller
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
