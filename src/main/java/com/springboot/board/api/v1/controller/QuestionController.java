@@ -27,6 +27,7 @@ import jakarta.validation.Valid;
 public class QuestionController {
         private final QuestionService questionService;
 
+        //
         @Operation(summary = "질문 목록 조회", description = "페이지네이션된 질문 목록을 조회합니다.")
         @ApiResponses(value = {
                         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = QuestionResponse.class))),
