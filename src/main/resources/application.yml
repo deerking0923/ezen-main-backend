@@ -2,10 +2,6 @@ spring:
   application:
     name: ezen-main-backend
 
-  data:
-    mongodb:
-      uri: ${MONGO_URI}
-
   datasource:
     url: ${DB_URL}
     driver-class-name: com.mysql.cj.jdbc.Driver
