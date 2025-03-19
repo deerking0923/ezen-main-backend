@@ -15,8 +15,6 @@ jobs:
     env:
       HOST: ${{ secrets.ORACLE_EZEN_HOST }}
       USER: ${{ secrets.ORACLE_EZEN_USER }}
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
       - name: Checkout Repository
@@ -35,31 +33,44 @@ jobs:
           fi
           echo "Running ssh-keyscan for host: $HOST"
           ssh-keyscan "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
-
+      - name: Update Source Code on ORACLE
+        run: |
+          ssh $USER@$HOST << 'EOF'
+            if [ ! -d /home/ubuntu/ezen-main-backend ]; then
+              echo "Directory not found. Cloning repository..."
+              git clone https://github.com/deerking0923/ezen-main-backend.git /home/ubuntu/ezen-main-backend
+            else
+              echo "Directory exists. Resetting and pulling latest changes..."
+              cd /home/ubuntu/ezen-main-backend
+              git reset --hard HEAD
+              git pull
+            fi
+          EOF
+      - name: Clean Maven Project
+        run: |
+          ssh $USER@$HOST "cd /home/ubuntu/ezen-main-backend && mvn clean install -U"
       - name: Build Maven Project
         run: |
-          mvn clean install
-          mvn clean compile package -DskipTests=true
+          ssh $USER@$HOST "cd /home/ubuntu/ezen-main-backend && mvn package -DskipTests"
 
-      - name: Build Docker Image
-        run: |
-          docker build -t $DOCKER_USERNAME/ezen-main-backend:latest .
-
+          - name: Build Docker Image
+          run: |
+            docker build -t $DOCKER_USERNAME/ezen-main-backend:latest .
+  
       - name: Push Docker Image
         run: |
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push $DOCKER_USERNAME/ezen-main-backend:latest
-
+  
       - name: Deploy Application on ORACLE
         run: |
           ssh $USER@$HOST << 'EOF'
             # 기존 애플리케이션 종료
             docker ps -q --filter "name=ezen-main-backend" | xargs -r docker stop
             docker ps -q --filter "name=ezen-main-backend" | xargs -r docker rm
-
+  
             # 새 도커 컨테이너 실행
             docker run -d --name ezen-main-backend -p 8080:8080 $DOCKER_USERNAME/ezen-main-backend:latest
-
-            # 실행 확인
+                # 실행 확인
             docker logs -f ezen-main-backend
           EOF
