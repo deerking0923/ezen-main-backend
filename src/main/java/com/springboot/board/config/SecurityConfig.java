@@ -19,7 +19,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // ★ JwtAuthenticationFilter Bean 추가
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(JwtTokenProvider provider) {
         return new JwtAuthenticationFilter(provider);
@@ -30,8 +29,7 @@ public class SecurityConfig {
         http.csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and().authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**","/swagger-ui.html","/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()  // 모든 요청에 대해 인증 없이 접근 허용
             .and().addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
