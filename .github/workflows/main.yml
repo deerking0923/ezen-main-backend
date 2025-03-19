@@ -73,7 +73,7 @@ jobs:
             sudo docker ps -q --filter "name=ezen-main-backend" | xargs -r sudo docker rm
   
             # 새 도커 컨테이너 실행
-            sudo docker run -d --name ezen-main-backend -p 8080:8080 $DOCKER_USERNAME/ezen-main-backend:latest
+            sudo docker run -d --name ezen-main-backend -p 8080:8080 realdeer/ezen-main-backend:latest
             # 실행 확인
             sudo docker logs -f ezen-main-backend
           EOF
