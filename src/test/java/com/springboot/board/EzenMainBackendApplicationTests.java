@@ -8,7 +8,6 @@ import org.springframework.test.context.TestPropertySource;
 import com.springboot.board.EzenMainBackendApplication;
 
 @SpringBootTest(classes = EzenMainBackendApplication.class)
-@TestPropertySource(locations = "classpath:.env")
 class EzenMainBackendApplicationTests {
 
 	@Test
