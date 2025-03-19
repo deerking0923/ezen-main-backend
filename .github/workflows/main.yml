@@ -61,6 +61,7 @@ jobs:
   
       - name: Push Docker Image
         run: |
+          ssh $USER@$HOST "sudo docker images"
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           sudo docker push $DOCKER_USERNAME/ezen-main-backend:latest
   
