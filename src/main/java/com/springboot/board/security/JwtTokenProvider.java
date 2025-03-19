@@ -9,11 +9,11 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Set;
 
+// ... 기존 코드 ...
 @Component
 public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
-    
     @Value("${jwt.expiration-ms}")
     private long validityMs;
 
@@ -54,7 +54,7 @@ public class JwtTokenProvider {
         }
     }
     
-    // 추가: validityMs getter 메서드
+    // JWT 유효기간 getter
     public long getValidityMs() {
         return validityMs;
     }
