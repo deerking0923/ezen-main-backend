@@ -15,11 +15,12 @@ import java.util.Set;
 @AllArgsConstructor
 public class User {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String username;  // 로그인용 아이디
 
     @Column(nullable = false)
     private String password;
@@ -28,7 +29,7 @@ public class User {
     private String email;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default                // ★ 필수
+    @Builder.Default
     private Set<String> roles = new HashSet<>();
 
     private LocalDateTime createdDate = DateTimeUtil.now();

@@ -57,7 +57,7 @@ public class QuestionController {
                         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "질문 없음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
         })
         @GetMapping("/{id}")
-        public ApiResponse<QuestionResponse> getQuestion(@PathVariable Integer id) {
+        public ApiResponse<QuestionResponse> getQuestion(@PathVariable Long id) {
                 return ApiResponse.success(questionService.getQuestion(id));
         }
 
@@ -69,7 +69,7 @@ public class QuestionController {
         })
         @PutMapping("/{id}")
         public ApiResponse<QuestionResponse> updateQuestion(
-                        @PathVariable Integer id,
+                        @PathVariable Long id,
                         @Valid @RequestBody QuestionUpdateRequest request) {
                 return ApiResponse.success(questionService.updateQuestion(id, request));
         }
@@ -81,34 +81,8 @@ public class QuestionController {
         })
         @DeleteMapping("/{id}")
         @ResponseStatus(HttpStatus.NO_CONTENT) // 삭제 성공 시 No Content 상태 코드 반환
-        public void deleteQuestion(@PathVariable Integer id) {
+        public void deleteQuestion(@PathVariable Long id) {
                 questionService.deleteQuestion(id);
-        }
-
-        @Operation(summary = "오늘의 질문", description = "랜덤으로 오늘의 질문을 반환합니다.")
-        @ApiResponses(value = {
-                        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "랜덤 질문 반환 성공", content = @Content(schema = @Schema(implementation = QuestionResponse.class))),
-                        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "질문 없음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-        })
-        @GetMapping("/random")
-        public ApiResponse<QuestionResponse> getRandomQuestion() {
-                QuestionResponse randomQuestion = questionService.getRandomQuestion();
-                return ApiResponse.success(randomQuestion);
-        }
-
-        // 비밀번호 확인 로직
-        @Operation(summary = "비밀번호 확인", description = "질문의 비밀번호가 일치하는지 확인합니다.")
-        @ApiResponses(value = {
-                        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "비밀번호 확인 성공"),
-                        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "질문 없음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-        })
-        @PostMapping("/{id}/check-password")
-        public ApiResponse<Boolean> checkPassword(
-                        @PathVariable Integer id,
-                        @RequestBody Map<String, String> request) {
-                String inputPassword = request.get("password");
-                boolean isMatch = questionService.checkPassword(id, inputPassword);
-                return ApiResponse.success(isMatch);
         }
 
 }

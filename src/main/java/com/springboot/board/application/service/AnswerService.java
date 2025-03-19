@@ -4,44 +4,49 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import com.springboot.board.domain.repository.AnswerRepository;
+import com.springboot.board.domain.repository.QuestionRepository;
+import com.springboot.board.domain.repository.UserRepository;
 import com.springboot.board.api.v1.dto.request.AnswerCreateRequest;
+import com.springboot.board.api.v1.dto.request.AnswerUpdateRequest;
 import com.springboot.board.api.v1.dto.response.AnswerResponse;
 import com.springboot.board.application.mapper.AnswerMapper;
+import com.springboot.board.common.exception.DataNotFoundException;
 import com.springboot.board.domain.entity.Answer;
 
-// AnswerService 클래스는 답변 관련 비즈니스 로직을 처리하는 서비스 클래스
 @Service
-@Transactional(readOnly = true) // 읽기 전용 트랜잭션을 설정하여 성능을 최적화
 @RequiredArgsConstructor
 public class AnswerService {
-    private final AnswerRepository answerRepository;
-    private final AnswerMapper answerMapper;
-    private final QuestionService questionService;
 
-    @Transactional // 트랜잭션을 사용하여 데이터베이스 작업을 수행
-    public AnswerResponse createAnswer(AnswerCreateRequest request) {
+    private final AnswerRepository answerRepo;
+    private final QuestionRepository questionRepo;
+    private final UserRepository userRepo;
+    private final AnswerMapper mapper;
 
-        // AnswerCreateRequest를 Answer 엔티티로 변환
-        Answer answer = answerMapper.toEntity(request, questionService);
-
-        // 변환된 Answer 엔티티를 데이터베이스에 저장
-        Answer savedAnswer = answerRepository.save(answer);
-
-        // 저장된 Answer 엔티티를 AnswerResponse로 변환하여 반환
-        return answerMapper.toResponse(savedAnswer);
+    @Transactional
+    public AnswerResponse createAnswer(AnswerCreateRequest req) {
+        var question = questionRepo.findById(req.getQuestionId())
+                .orElseThrow(() -> new DataNotFoundException("Question not found"));
+        var user = userRepo.findById(req.getUserId())
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+        var answer = mapper.toEntity(req);
+        answer.setQuestion(question);
+        answer.setUser(user);
+        return mapper.toResponse(answerRepo.save(answer));
     }
-    /*
-     * @Transactional
-     * public AnswerResponse updateAnswer(Integer id, AnswerUpdateRequest request) {
-     * // 답변 찾기
-     * Answer answer = answerRepository.findById(id)
-     * .orElseThrow(() -> new RuntimeException("답변을 찾을 수 없습니다.")); // 예외 처리 추가
-     * 
-     * // 답변 수정
-     * answer.setContent(request.getContent());
-     * answerRepository.save(answer);
-     * 
-     * return new AnswerResponse(answer); // 수정된 답변 반환
-     * }
-     */
+
+    @Transactional
+    public AnswerResponse updateAnswer(Long id, AnswerUpdateRequest req) {
+        Answer answer = answerRepo.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Answer not found"));
+        answer.setContent(req.getContent());
+        return mapper.toResponse(answerRepo.save(answer));
+    }
+
+    @Transactional
+    public void deleteAnswer(Long id) {
+        if (!answerRepo.existsById(id)) {
+            throw new DataNotFoundException("Answer not found");
+        }
+        answerRepo.deleteById(id);
+    }
 }

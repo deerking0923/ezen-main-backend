@@ -1,20 +1,18 @@
 package com.springboot.board.api.v1.dto.response;
 
-import lombok.Getter;
 import lombok.Builder;
+import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Builder
 public class QuestionResponse {
-    private Integer id;
+    private Long id;
     private String subject;
     private String content;
-    private LocalDateTime createDate;
+    private LocalDateTime createdDate;
+    private Integer viewCount;
+    private String authorUsername;      // user.username 매핑
     private List<AnswerResponse> answers;
-    private String password;
-    // 새 필드 추가
-    private String author; // 작성자
-    private Integer viewCount; // 조회수
 }

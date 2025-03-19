@@ -12,19 +12,23 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface QuestionMapper {
 
-    // QuestionCreateRequest에서 Question 엔티티로 변환
-    @Mapping(target = "author", source = "author") // 작성자 매핑
+    // Request -> Entity
+    // user 정보는 서비스 계층에서 주입(setUser)하고,
+    // viewCount나 answers는 초기값 혹은 ignore 처리
     @Mapping(target = "viewCount", ignore = true)
+    @Mapping(target = "answers", ignore = true)
     Question toEntity(QuestionCreateRequest request);
 
-    // Question 엔티티에서 QuestionResponse로 변환
-    @Mapping(target = "answers", source = "answers") // 답변 매핑
-    @Mapping(target = "password", source = "password")
+    // Entity -> Response
+    // QuestionResponse에는 authorUsername 필드가 있으므로 user.username 매핑
+    @Mapping(target = "authorUsername", source = "user.username")
+    @Mapping(target = "answers", source = "answers")
     QuestionResponse toResponse(Question question);
 
-    // Answer 엔티티 리스트를 AnswerResponse 리스트로 변환
+    // Answer 리스트 -> AnswerResponse 리스트
     List<AnswerResponse> toAnswerResponses(List<Answer> answers);
 
-    // Answer 엔티티를 AnswerResponse로 변환
+    // Answer -> AnswerResponse
+    // (굳이 필요 없다면 삭제 가능하나, 아래 answers 매핑시 사용할 수 있습니다)
     AnswerResponse toAnswerResponse(Answer answer);
 }
