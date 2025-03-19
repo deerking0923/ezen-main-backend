@@ -9,6 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
+import jakarta.servlet.http.Cookie;
+
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider provider;
@@ -18,19 +20,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        String token = resolveToken(request);
-        if (token != null && provider.validateToken(token)) {
-            String username = provider.getUsername(token);
-            var auth = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
-            SecurityContextHolder.getContext().setAuthentication(auth);
-        }
-        filterChain.doFilter(request, response);
+protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+        throws ServletException, IOException {
+    String token = resolveToken(request);
+    if (token != null && provider.validateToken(token)) {
+        String username = provider.getUsername(token);
+        var auth = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
+    filterChain.doFilter(request, response);
+}
 
-    private String resolveToken(HttpServletRequest request) {
-        String bearer = request.getHeader("Authorization");
-        return (bearer != null && bearer.startsWith("Bearer ")) ? bearer.substring(7) : null;
+private String resolveToken(HttpServletRequest request) {
+    // 우선 Authorization 헤더 확인
+    String bearer = request.getHeader("Authorization");
+    if (bearer != null && bearer.startsWith("Bearer ")) {
+        return bearer.substring(7);
     }
+    // 헤더에 없으면 쿠키에서 확인
+    if (request.getCookies() != null) {
+        for (Cookie cookie : request.getCookies()) {
+            if ("jwt".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+    }
+    return null;
+}
+
 }

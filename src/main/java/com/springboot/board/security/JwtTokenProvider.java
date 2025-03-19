@@ -13,6 +13,7 @@ import java.util.Set;
 public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
+    
     @Value("${jwt.expiration-ms}")
     private long validityMs;
 
@@ -51,5 +52,10 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+    
+    // 추가: validityMs getter 메서드
+    public long getValidityMs() {
+        return validityMs;
     }
 }

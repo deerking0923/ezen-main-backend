@@ -7,6 +7,11 @@ import org.springframework.http.HttpStatus;
 import com.springboot.board.domain.entity.User;
 import com.springboot.board.domain.repository.UserRepository;
 import com.springboot.board.security.JwtTokenProvider;
+import jakarta.servlet.http.Cookie;
+
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import com.springboot.board.api.v1.dto.request.AuthRequest;
 import com.springboot.board.api.v1.dto.response.AuthResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,12 +33,23 @@ public class AuthController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest req) {
-        User user = userRepository.findByUsername(req.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        if (!encoder.matches(req.getPassword(), user.getPassword())) throw new RuntimeException("Invalid credentials");
-        String token = jwtProvider.createToken(user.getUsername(), user.getRoles());
-        return ResponseEntity.ok(new AuthResponse(token));
+@PostMapping("/login")
+public ResponseEntity<Void> login(@RequestBody AuthRequest req, HttpServletResponse response) {
+    User user = userRepository.findByUsername(req.getUsername())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    if (!encoder.matches(req.getPassword(), user.getPassword())) {
+        throw new RuntimeException("Invalid credentials");
     }
+    String token = jwtProvider.createToken(user.getUsername(), user.getRoles());
+    
+    // HttpOnly 쿠키 설정 (예: 쿠키 이름을 "jwt"로, 만료시간은 토큰 만료 시간에 맞춤)
+    Cookie cookie = new Cookie("jwt", token);
+    cookie.setHttpOnly(true); // HttpOnly 플래그 활성화
+    cookie.setPath("/");      // 전체 경로에서 사용
+    cookie.setMaxAge((int)(jwtProvider.getValidityMs() / 1000)); // 유효기간 (초 단위)
+    
+    response.addCookie(cookie);
+    return ResponseEntity.ok().build();
+}
+
 }

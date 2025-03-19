@@ -32,15 +32,18 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeHttpRequests()
-                // /api/v1/** (예: 게시글 조회 등)는 GET 요청은 공개
+                // 인증 없이 접근할 수 있는 엔드포인트 설정 (로그인, 회원가입)
+                .requestMatchers("/api/v1/auth/**").permitAll()
+                // 일반 GET 요청은 공개
                 .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
-                // 하지만 /mylibrary-service/**는 GET이라도 인증 필요 (개인 데이터 조회)
+                // 마이 라이브러리 서비스는 인증 필요
                 .requestMatchers("/mylibrary-service/**").authenticated()
-                // 나머지 POST, PUT, DELETE 등은 인증 필요
+                // 그 외의 모든 요청은 인증 필요
                 .anyRequest().authenticated()
             .and()
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
+    
         return http.build();
     }
+    
 }
