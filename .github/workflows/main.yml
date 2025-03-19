@@ -55,7 +55,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t $DOCKER_USERNAME/ezen-main-backend:latest .
+          ssh $USER@$HOST "cd /home/ubuntu/ezen-main-backend && docker build -t $DOCKER_USERNAME/ezen-main-backend:latest ."
   
       - name: Push Docker Image
         run: |
