@@ -15,6 +15,8 @@ jobs:
     env:
       HOST: ${{ secrets.ORACLE_EZEN_HOST }}
       USER: ${{ secrets.ORACLE_EZEN_USER }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
       - name: Checkout Repository
