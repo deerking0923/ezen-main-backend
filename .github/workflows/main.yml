@@ -48,29 +48,29 @@ jobs:
           EOF
       - name: Clean Maven Project
         run: |
-          ssh $USER@$HOST "cd /home/ubuntu/ezen-main-backend && mvn clean install -U"
+          ssh $USER@$HOST "cd /home/ubuntu/ezen-main-backend && sudo mvn clean install -U"
       - name: Build Maven Project
         run: |
-          ssh $USER@$HOST "cd /home/ubuntu/ezen-main-backend && mvn package -DskipTests"
+          ssh $USER@$HOST "cd /home/ubuntu/ezen-main-backend && sudo mvn package -DskipTests"
 
       - name: Build Docker Image
         run: |
-          ssh $USER@$HOST "cd /home/ubuntu/ezen-main-backend && docker build -t $DOCKER_USERNAME/ezen-main-backend:latest ."
+          ssh $USER@$HOST "cd /home/ubuntu/ezen-main-backend && sudo docker build -t $DOCKER_USERNAME/ezen-main-backend:latest ."
   
       - name: Push Docker Image
         run: |
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push $DOCKER_USERNAME/ezen-main-backend:latest
+          sudo docker push $DOCKER_USERNAME/ezen-main-backend:latest
   
       - name: Deploy Application on ORACLE
         run: |
           ssh $USER@$HOST << 'EOF'
             # 기존 애플리케이션 종료
-            docker ps -q --filter "name=ezen-main-backend" | xargs -r docker stop
-            docker ps -q --filter "name=ezen-main-backend" | xargs -r docker rm
+            sudo docker ps -q --filter "name=ezen-main-backend" | xargs -r sudo docker stop
+            sudo docker ps -q --filter "name=ezen-main-backend" | xargs -r sudo docker rm
   
             # 새 도커 컨테이너 실행
-            docker run -d --name ezen-main-backend -p 8080:8080 $DOCKER_USERNAME/ezen-main-backend:latest
-                # 실행 확인
-            docker logs -f ezen-main-backend
+            sudo docker run -d --name ezen-main-backend -p 8080:8080 $DOCKER_USERNAME/ezen-main-backend:latest
+            # 실행 확인
+            sudo docker logs -f ezen-main-backend
           EOF
