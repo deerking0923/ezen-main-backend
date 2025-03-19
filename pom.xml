@@ -158,6 +158,13 @@
   <scope>provided</scope>
 </dependency>
 
+    <!--모델 맵퍼-->
+    <dependency>
+    <groupId>org.modelmapper</groupId>
+    <artifactId>modelmapper</artifactId>
+    <version>3.1.0</version>
+</dependency>
+
 	</dependencies>
 
     <build>
