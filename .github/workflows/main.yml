@@ -59,11 +59,11 @@ jobs:
         run: |
           ssh $USER@$HOST "cd /home/ubuntu/ezen-main-backend && sudo docker build -t $DOCKER_USERNAME/ezen-main-backend:latest ."
   
-      - name: Push Docker Image
-        run: |
-          ssh $USER@$HOST "sudo docker images"
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          sudo docker push $DOCKER_USERNAME/ezen-main-backend:latest
+      # - name: Push Docker Image
+      #   run: |
+      #     ssh $USER@$HOST "sudo docker images"
+      #     docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      #     sudo docker push $DOCKER_USERNAME/ezen-main-backend:latest
   
       - name: Deploy Application on ORACLE
         run: |
