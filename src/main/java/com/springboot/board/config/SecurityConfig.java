@@ -29,7 +29,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
         http
             .csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .cors()
             .and()
             .authorizeHttpRequests()
                 // 인증 없이 접근할 수 있는 엔드포인트 설정 (로그인, 회원가입) 일단.
