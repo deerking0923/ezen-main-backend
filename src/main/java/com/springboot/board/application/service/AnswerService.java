@@ -31,6 +31,7 @@ public class AnswerService {
         var answer = mapper.toEntity(req);
         answer.setQuestion(question);
         answer.setUser(user);
+        System.out.println("User's username: " + answer.getUser().getUsername());
         return mapper.toResponse(answerRepo.save(answer));
     }
 

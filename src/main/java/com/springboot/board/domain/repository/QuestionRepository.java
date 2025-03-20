@@ -12,10 +12,12 @@ import java.util.Optional;
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query("""
-            SELECT q
-            FROM Question q
-            LEFT JOIN FETCH q.answers
-            WHERE q.id = :id
-            """)
+        SELECT q
+        FROM Question q
+        LEFT JOIN FETCH q.answers a
+        LEFT JOIN FETCH a.user
+        WHERE q.id = :id
+        """)
     Optional<Question> findByIdWithAnswers(@Param("id") Long id);
+    
 }

@@ -9,10 +9,10 @@ import com.springboot.board.domain.entity.Answer;
 @Mapper(componentModel = "spring")
 public interface AnswerMapper {
 
-    // Request -> Entity (문자열 content 정도만 매핑; question, user는 서비스 계층에서 주입)
+    // Request -> Entity (question, user는 서비스 계층에서 주입)
     Answer toEntity(AnswerCreateRequest request);
 
     // Entity -> Response
-    @Mapping(target = "authorUsername", source = "user.username")
+    @Mapping(target = "authorUsername", expression = "java(answer.getUser() != null ? answer.getUser().getUsername() : null)")
     AnswerResponse toResponse(Answer answer);
 }
