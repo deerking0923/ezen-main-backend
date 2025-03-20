@@ -22,8 +22,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         registry.addMapping("/**") // 모든 경로에 대해 CORS 설정 적용
                 .allowedOrigins(
-                        "http://43.201.239.97:3000/", // Next.js 개발 서버
-                        "http://43.201.239.97:8080/", // Spring Boot 개발 서버,
+                        "http://43.201.239.97:3000", // Next.js 개발 서버
+                        "http://43.201.239.97:8080", // Spring Boot 개발 서버,
                         "http://localhost:3000",
                         "http://localhost:8080")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
