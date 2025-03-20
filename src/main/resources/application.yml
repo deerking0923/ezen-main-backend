@@ -24,8 +24,8 @@ server:
   port: 8080
   servlet:
     session:
-    cookie:
-      domain: dadoklog.com
+      cookie:
+        domain: dadoklog.com
     context-path: /
     encoding:
       charset: UTF-8
