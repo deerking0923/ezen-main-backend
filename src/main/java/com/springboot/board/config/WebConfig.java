@@ -25,7 +25,9 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://43.201.239.97:3000", // Next.js 개발 서버
                         "http://43.201.239.97:8080", // Spring Boot 개발 서버,
                         "http://localhost:3000",
-                        "http://localhost:8080")
+                        "http://localhost:8080",
+                        "http://dadoklog.com",
+                        "http://www.dadoklog.com")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*") // 모든 헤더 허용
                 .allowCredentials(true) // 인증 정보 허용
