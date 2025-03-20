@@ -75,4 +75,6 @@ jobs:
             sudo docker run -d --name ezen-main-backend -p 8080:8080 realdeer/ezen-main-backend:latest
             # 실행 확인
             sudo docker logs --tail 10 ezen-main-backend
+            # 빌드 캐시 삭제 (사용자 확인 없이 삭제)
+            sudo docker builder prune -a -f
           EOF
