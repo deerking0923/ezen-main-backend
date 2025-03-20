@@ -32,7 +32,7 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeHttpRequests()
-                // 인증 없이 접근할 수 있는 엔드포인트 설정 (로그인, 회원가입)
+                // 인증 없이 접근할 수 있는 엔드포인트 설정 (로그인, 회원가입) 일단.
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 // 일반 GET 요청은 공개
                 .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
