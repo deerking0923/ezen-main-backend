@@ -9,6 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication; // 추가
+import org.springframework.security.core.context.SecurityContextHolder; // 추가
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,8 +24,20 @@ public class MyLibraryController {
         this.myLibraryService = myLibraryService;
     }
 
-    @GetMapping("/{userId}/booklist")
-    public ResponseEntity<?> getUserBooks(@PathVariable("userId") Long userId) {
+    @GetMapping("/booklist")
+    public ResponseEntity<?> getUserBooks() {
+        // SecurityContextHolder에서 현재 인증된 사용자 정보를 가져옴
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        // principal이 문자열(username)인 경우
+        String username = (String) auth.getPrincipal();
+        // 서비스 계층에서 username을 이용해 userId를 조회하는 메서드를 호출합니다.
+        Long userId = myLibraryService.getUserIdByUsername(username);
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
         log.info("GET booklist for userId: {}", userId);
         return ResponseEntity.ok(myLibraryService.getUserBooks(userId));
     }
