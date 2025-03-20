@@ -5,6 +5,10 @@ import com.springboot.board.api.v1.dto.request.RequestUserBook;
 import com.springboot.board.api.v1.dto.response.ResponseUserBook;
 import com.springboot.board.application.service.MyLibraryService;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.http.HttpStatus;
@@ -24,23 +28,31 @@ public class MyLibraryController {
         this.myLibraryService = myLibraryService;
     }
 
-    @GetMapping("/booklist")
-    public ResponseEntity<?> getUserBooks() {
-        // SecurityContextHolder에서 현재 인증된 사용자 정보를 가져옴
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        // principal이 문자열(username)인 경우
-        String username = (String) auth.getPrincipal();
-        // 서비스 계층에서 username을 이용해 userId를 조회하는 메서드를 호출합니다.
-        Long userId = myLibraryService.getUserIdByUsername(username);
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        log.info("GET booklist for userId: {}", userId);
-        return ResponseEntity.ok(myLibraryService.getUserBooks(userId));
+@GetMapping("/booklist")
+public ResponseEntity<?> getUserBooks() {
+    // SecurityContextHolder에서 현재 인증된 사용자 정보를 가져옴
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+    // principal이 문자열(username)인 경우
+    String username = (String) auth.getPrincipal();
+    // 서비스 계층에서 username을 이용해 userId를 조회하는 메서드를 호출합니다.
+    Long userId = myLibraryService.getUserIdByUsername(username);
+    if (userId == null) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+    log.info("GET booklist for userId: {}", userId);
+    
+    // 책 목록 조회
+    List<UserBookDto> books = myLibraryService.getUserBooks(userId);
+    // 책 목록이 null이거나 비어있으면 빈 배열을 반환
+    if (books == null) {
+        books = new ArrayList<>();
+    }
+    return ResponseEntity.ok(books);
+}
+
 
     @PostMapping("/{userId}/create")
     public ResponseEntity<ResponseUserBook> createUserBook(
