@@ -20,17 +20,21 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
-        registry.addMapping("/**") // 모든 경로에 대해 CORS 설정 적용
+        registry.addMapping("/**")
                 .allowedOrigins(
-                        "http://43.201.239.97:3000", // Next.js 개발 서버
-                        "http://43.201.239.97:8080", // Spring Boot 개발 서버,
-                        "http://localhost:3000",
-                        "http://localhost:8080",
-                        "http://dadoklog.com",
-                        "http://www.dadoklog.com")
+                    "http://43.201.239.97:3000",
+                    "http://43.201.239.97:8080",
+                    "http://localhost:3000",
+                    "http://localhost:8080",
+                    "http://dadoklog.com",
+                    "http://www.dadoklog.com",
+                    "https://dadoklog.com",        // 추가
+                    "https://www.dadoklog.com"       // 추가
+                )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*") // 모든 헤더 허용
-                .allowCredentials(true) // 인증 정보 허용
-                .maxAge(3600); // preflight 캐시 시간 (1시간)
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
     }
+    
 }
