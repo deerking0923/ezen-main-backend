@@ -38,7 +38,7 @@ Layered Architecture로 리팩토링된 읽기 기록 서비스 백엔드 (Produ
 ## ⚙️ 로컬 실행
 1️⃣ 리포지토리 클론
 ```bash
-git clone https://github.com/username/ezen-main-springcloud.git
+git clone https://github.com/deerking0923/ezen-main-backend.git
 cd ezen-main-springcloud
 ```
 2️⃣ 환경 변수 설정 (`.env`)
