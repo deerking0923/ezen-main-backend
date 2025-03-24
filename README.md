@@ -1,4 +1,4 @@
-# 🚀 다독다독 — Layered Architecture 버전 (Backend)
+# 다독다독 — Layered Architecture 버전 (Backend)
 
 ## 한 줄 소개
 Layered Architecture로 리팩토링된 읽기 기록 서비스 백엔드 (Production Deployment)
@@ -9,7 +9,7 @@ Layered Architecture로 리팩토링된 읽기 기록 서비스 백엔드 (Produ
 ## 배포 링크
 - API Base URL: https://dadoklog.com/
 
-## 📖 기능 목록
+## 기능 목록
 | 기능 | 설명 | 엔드포인트 |
 |------|-------|------------|
 | 회원 가입 | 신규 사용자 등록 | POST /api/v1/auth/signup |
